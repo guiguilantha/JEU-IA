@@ -6,25 +6,50 @@ for (let i = 0; i < 64; i++) {
 }
 function dessinerFond(ctx, temps) {
   const degrade = ctx.createLinearGradient(0, 0, 0, HAUTEUR);
-  degrade.addColorStop(0, "#170b32");
+  degrade.addColorStop(0, "#111b12");
   degrade.addColorStop(0.52, COULEURS.fond);
-  degrade.addColorStop(1, "#02010a");
+  degrade.addColorStop(1, "#050805");
   ctx.fillStyle = degrade;
   ctx.fillRect(0, 0, LARGEUR, HAUTEUR);
 
   const horizon = HAUTEUR * 0.58;
   const halo = ctx.createRadialGradient(LARGEUR / 2, horizon, 4, LARGEUR / 2, horizon, LARGEUR * 0.8);
-  halo.addColorStop(0, "rgba(255, 62, 165, 0.2)");
-  halo.addColorStop(0.5, "rgba(122, 92, 255, 0.07)");
+  halo.addColorStop(0, "rgba(143, 36, 36, 0.22)");
+  halo.addColorStop(0.5, "rgba(110, 150, 55, 0.08)");
   halo.addColorStop(1, "rgba(0, 0, 0, 0)");
   ctx.fillStyle = halo;
   ctx.fillRect(0, 0, LARGEUR, HAUTEUR);
 
-  for (const etoile of etoiles) {
-    const lueur = 0.2 + 0.4 * Math.abs(Math.sin(temps + etoile.phase));
-    ctx.fillStyle = "rgba(245, 247, 255, " + lueur + ")";
-    ctx.fillRect(etoile.x, etoile.y, etoile.taille, etoile.taille);
+  ctx.save();
+  ctx.globalAlpha = 0.9;
+  for (let i = 0; i < 10; i++) {
+    const largeur = 28 + (i % 3) * 13;
+    const hauteur = 72 + (i * 31) % 120;
+    const x = i * 54 - 12;
+    const y = horizon - hauteur;
+    ctx.fillStyle = i % 2 ? "#111811" : "#182016";
+    ctx.fillRect(x, y, largeur, hauteur);
+    ctx.fillStyle = "rgba(5, 8, 5, 0.9)";
+    ctx.fillRect(x + largeur * 0.55, y - 10, largeur * 0.5, 12);
+    ctx.strokeStyle = "rgba(78, 91, 61, 0.35)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + largeur * 0.18, y + hauteur * 0.2);
+    ctx.lineTo(x + largeur * 0.42, y + hauteur * 0.34);
+    ctx.lineTo(x + largeur * 0.27, y + hauteur * 0.58);
+    ctx.stroke();
+    for (let ligne = 0; ligne < 3; ligne++) {
+      for (let colonne = 0; colonne < 2; colonne++) {
+        if ((i + ligne + colonne) % 3 !== 0) {
+          ctx.fillStyle = ligne === 1 && colonne === 0 ? "rgba(210, 190, 75, 0.5)" : "rgba(76, 96, 63, 0.45)";
+          ctx.fillRect(x + 7 + colonne * 15, y + 16 + ligne * 24, 6, 9);
+        }
+      }
+    }
   }
+  ctx.fillStyle = "rgba(2, 5, 2, 0.82)";
+  ctx.fillRect(0, horizon - 3, LARGEUR, 8);
+  ctx.restore();
 
   ctx.strokeStyle = COULEURS.grille;
   ctx.lineWidth = 1;
@@ -48,12 +73,15 @@ function dessinerFond(ctx, temps) {
   ctx.save();
   ctx.shadowColor = COULEURS.magenta;
   ctx.shadowBlur = 16;
-  ctx.strokeStyle = "rgba(255, 62, 165, 0.5)";
+  ctx.strokeStyle = "rgba(143, 36, 36, 0.5)";
   ctx.beginPath();
   ctx.moveTo(0, horizon);
   ctx.lineTo(LARGEUR, horizon);
   ctx.stroke();
   ctx.restore();
+
+  ctx.fillStyle = "rgba(110, 150, 55, 0.06)";
+  ctx.fillRect(0, horizon - 34 + Math.sin(temps * 0.4) * 4, LARGEUR, 34);
 }
 function dessinerPanier(ctx, panier, temps) {
   const inclinaison = Math.max(-0.2, Math.min(0.2, panier.vitesse * 0.00025));

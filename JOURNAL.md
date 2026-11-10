@@ -48,23 +48,49 @@ objets ralentissent pendant 4 secondes, puis reprennent leur vitesse. Respecte l
 - Mon prompt en mode Agent :
 
 ``` js
-(colle-le ici)
+## Objectif
+
+Modifie les textures et le décor du jeu pour créer une ambiance d’apocalypse zombie avec une ville en ruine.
+
+## Contexte
+
+Le jeu « Pluie de Néon » est réalisé en HTML, CSS et JavaScript simples.
+Le décor est dessiné directement dans le canvas, principalement dans `dessin.js`.
+Le jeu doit continuer à fonctionner en ouvrant directement `index.html`.
+
+## Contraintes
+
+- Ajouter une ville en ruine en arrière-plan.
+- Utiliser des bâtiments cassés, des fenêtres détruites, des fissures et de la fumée.
+- Utiliser des couleurs sombres, vert toxique, gris, marron et rouge sang.
+- Garder les objets du jeu visibles et faciles à reconnaître.
+- Ne pas modifier les règles du jeu.
+- Ne pas utiliser d’image ou de bibliothèque externe.
+- Respecter les noms et la structure du code existant.
+- Après toute modification de JavaScript, lancer `node --check`.
+- Garder le code simple et lisible.
+
+## Format attendu
+
+Analyse d’abord `dessin.js`, `style.css` et `index.html`.
+Présente ensuite un court plan, puis modifie le décor.
+Indique les fichiers modifiés et explique comment vérifier le résultat dans le navigateur.
 ```
 
-- Fichiers que l'agent a modifiés :
-- Ce que j'ai relu dans les changements avant d'accepter :
-- Ce que j'ai refusé, corrigé ou fait refaire :
-- Mon jeu après l'agent (une phrase) :
+- Fichiers que l'agent a modifiés : dessin.js, style.css, index.html
+- Ce que j'ai relu dans les changements avant d'accepter : dessin.js
+- Ce que j'ai refusé, corrigé ou fait refaire : j'ai corriger les couleur.
+- Mon jeu après l'agent (une phrase) : Le décor a été modifié pour créer une ambiance d’apocalypse zombie.
 
 ## Défi 5 - Pull request et revue
 
-- Lien de ma pull request :
-- Commentaire de la revue Copilot que j'ai traité (le texte) :
-- Ma décision (corrigé ou refusé) et pourquoi :
-- Lien de mon jeu publié :
+- Lien de ma pull request : https://github.com/guiguilantha/JEU-IA/pulls?q=is%3Apr+state%3Aclosed 
+- Commentaire de la revue Copilot que j'ai traité (le texte) : Copilot was unable to review this pull request because the user who requested the review has insufficient remaining quota. Try requesting a review at a lower effort level.
+- Ma décision (corrigé ou refusé) et pourquoi : garder le code 
+- Lien de mon jeu publié : https://guiguilantha.github.io/JEU-IA/
 
 ## Bilan (3 lignes maximum)
 
-- Ce que l'assistant a fait mieux ou plus vite que moi :
-- Ce qu'il a mal fait ou ce que j'ai dû corriger :
-- Ce que je ne lui laisserais pas faire :
+- Ce que l'assistant a fait mieux ou plus vite que moi : le dessin du décor et la mise en place de l'ambiance d'apocalypse zombie.
+- Ce qu'il a mal fait ou ce que j'ai dû corriger : l'UX 
+- Ce que je ne lui laisserais pas faire : l'UX et le choix des couleurs.
