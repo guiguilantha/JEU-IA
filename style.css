@@ -1,13 +1,13 @@
-/* Pluie de Néon : page, écrans et interface. */
+/* Pluie de Néon : interface dans une apocalypse zombie. */
 
 :root {
-  --fond: #05030f;
-  --cyan: #28f0ff;
-  --magenta: #ff3ea5;
-  --or: #ffd166;
-  --rouge: #ff4d6d;
-  --blanc: #f5f7ff;
-  --gris: #8b87a8;
+  --fond: #0b100b;
+  --cyan: #9fca58;
+  --magenta: #8f2424;
+  --or: #c4a24d;
+  --rouge: #d73535;
+  --blanc: #d8d8b8;
+  --gris: #7e8a70;
   --police: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --taille-scene: min(92vw, 432px, 54vh);
@@ -32,8 +32,9 @@ body {
   color: var(--blanc);
   font-family: var(--police);
   background:
-    radial-gradient(circle at 18% 0%, rgba(122, 92, 255, 0.2), transparent 42%),
-    radial-gradient(circle at 82% 100%, rgba(255, 62, 165, 0.14), transparent 46%),
+    radial-gradient(circle at 18% 0%, rgba(110, 150, 55, 0.22), transparent 42%),
+    radial-gradient(circle at 82% 100%, rgba(143, 36, 36, 0.2), transparent 46%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 210, 0.015) 0 2px, transparent 2px 9px),
     var(--fond);
 }
 
@@ -62,9 +63,9 @@ body {
 
 .bouton-son {
   padding: 6px 10px;
-  border: 1px solid rgba(40, 240, 255, 0.35);
+  border: 1px solid rgba(159, 202, 88, 0.45);
   border-radius: 999px;
-  background: rgba(40, 240, 255, 0.06);
+  background: rgba(159, 202, 88, 0.08);
   color: var(--cyan);
   font-family: var(--mono);
   font-size: 9px;
@@ -79,7 +80,7 @@ body {
 }
 
 .bouton-son:hover {
-  box-shadow: 0 0 18px rgba(40, 240, 255, 0.25);
+  box-shadow: 0 0 18px rgba(159, 202, 88, 0.35);
 }
 
 .scene {
@@ -91,8 +92,8 @@ body {
   border-radius: 16px;
   background: var(--fond);
   box-shadow:
-    0 0 0 1px rgba(40, 240, 255, 0.28),
-    0 0 30px rgba(40, 240, 255, 0.14),
+    0 0 0 1px rgba(159, 202, 88, 0.38),
+    0 0 30px rgba(143, 36, 36, 0.28),
     0 24px 70px rgba(0, 0, 0, 0.65);
 }
 
@@ -102,7 +103,7 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 45%, transparent 52%, rgba(2, 1, 8, 0.55) 100%);
+  background: radial-gradient(circle at 50% 45%, transparent 48%, rgba(2, 6, 2, 0.78) 100%);
 }
 
 .scene::after {
@@ -111,11 +112,11 @@ body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.12;
+  opacity: 0.2;
   background: repeating-linear-gradient(
     0deg,
-    rgba(255, 255, 255, 0.22) 0,
-    rgba(255, 255, 255, 0.22) 1px,
+    rgba(159, 202, 88, 0.14) 0,
+    rgba(159, 202, 88, 0.14) 1px,
     transparent 1px,
     transparent 3px
   );
@@ -162,7 +163,7 @@ canvas {
   font-size: clamp(22px, calc(var(--taille-scene) * 0.082), 38px);
   line-height: 1;
   color: var(--blanc);
-  text-shadow: 0 0 18px rgba(40, 240, 255, 0.55);
+  text-shadow: 0 0 18px rgba(159, 202, 88, 0.65);
 }
 
 .niveau {
@@ -198,6 +199,34 @@ canvas {
   opacity: 0.3;
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--gris);
+}
+
+.bouclier {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: var(--gris);
+}
+
+.bouclier.actif {
+  color: #9b7cff;
+  text-shadow: 0 0 10px #9b7cff;
+}
+
+.aimant {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: var(--gris);
+}
+
+.aimant.actif {
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan);
 }
 
 .combo {
@@ -252,8 +281,8 @@ canvas {
   padding: calc(var(--taille-scene) * 0.06);
   text-align: center;
   background:
-    radial-gradient(circle at 50% 24%, rgba(255, 62, 165, 0.12), transparent 40%),
-    linear-gradient(180deg, rgba(7, 4, 18, 0.72), rgba(3, 2, 8, 0.98));
+    radial-gradient(circle at 50% 24%, rgba(143, 36, 36, 0.24), transparent 40%),
+    linear-gradient(180deg, rgba(10, 18, 10, 0.82), rgba(3, 6, 3, 0.98));
   backdrop-filter: blur(2px);
   animation: apparait 0.35s ease both;
 }
@@ -278,12 +307,12 @@ canvas {
   line-height: 0.84;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  background: linear-gradient(180deg, #ffffff 0%, var(--cyan) 45%, var(--magenta) 100%);
+  background: linear-gradient(180deg, #e1e6b5 0%, var(--cyan) 45%, var(--magenta) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  filter: drop-shadow(0 0 18px rgba(40, 240, 255, 0.35)) drop-shadow(0 0 40px rgba(255, 62, 165, 0.22));
+  filter: drop-shadow(0 0 18px rgba(159, 202, 88, 0.4)) drop-shadow(0 0 40px rgba(143, 36, 36, 0.32));
   animation: souffle 4s ease-in-out infinite;
 }
 
@@ -322,19 +351,19 @@ canvas {
   padding: 13px 38px;
   border: 0;
   font-size: 13px;
-  color: #04121a;
-  background: linear-gradient(180deg, #9af8ff, var(--cyan));
-  box-shadow: 0 0 24px rgba(40, 240, 255, 0.38), 0 5px 0 #0b7f90;
+  color: #10150b;
+  background: linear-gradient(180deg, #d6e68a, var(--cyan));
+  box-shadow: 0 0 24px rgba(159, 202, 88, 0.45), 0 5px 0 #526d2d;
 }
 
 .bouton-principal:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 38px rgba(40, 240, 255, 0.65), 0 7px 0 #0b7f90;
+  box-shadow: 0 0 38px rgba(159, 202, 88, 0.7), 0 7px 0 #526d2d;
 }
 
 .bouton-principal:active {
   transform: translateY(2px);
-  box-shadow: 0 0 18px rgba(40, 240, 255, 0.4), 0 2px 0 #0b7f90;
+  box-shadow: 0 0 18px rgba(159, 202, 88, 0.5), 0 2px 0 #526d2d;
 }
 
 .bouton-secondaire {
