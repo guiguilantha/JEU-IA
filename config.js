@@ -8,10 +8,12 @@ const HAUTEUR = 720; // hauteur logique du canvas
 const CRISTAL = "cristal";
 const BOMBE = "bombe";
 const DORE = "dore";
+const GLACE = "glace";
 
 const COULEURS = {
   fond: "#05030f",
   cyan: "#28f0ff",
+  glace: "#9eeeff",
   magenta: "#ff3ea5",
   or: "#ffd166",
   rouge: "#ff4d6d",
@@ -31,6 +33,9 @@ const REGLAGES = {
   multiplicateurMax: 5,
   hasardBombe: 0.14,
   hasardDore: 0.05,
+  hasardGlace: 0.03,
+  dureeGlace: 4,
+  facteurGlace: 0.5,
   largeurPanier: 96,
   hauteurPanier: 16,
   margePanier: 12

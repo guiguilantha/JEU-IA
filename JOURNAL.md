@@ -1,8 +1,8 @@
 # Journal de bord
 
-Nom et prénom : 
-Dépôt : 
-Outil utilisé (Copilot, modèle affiché) : 
+Nom et prénom : guillaume riti 
+Dépôt : https://github.com/guiguilantha/JEU-IA.git
+Outil utilisé (Copilot, modèle affiché) : Copilot student 
 
 Règle : tu colles ici le texte exact de tes prompts (copier-coller, pas de capture). Une entrée par défi. Ce que tu n'as pas gardé compte autant que ce que tu as gardé.
 
@@ -10,42 +10,44 @@ Règle : tu colles ici le texte exact de tes prompts (copier-coller, pas de capt
 
 - Commentaire ou début de code que j'ai écrit :
 
-```
-(colle-le ici)
+``` js
+// AFFICHER LE NOMBRE DE CRISTAUX ATTRAPÉS SUR L'ÉCRAN DE FIN DANS finScore 
 ```
 
-- Ce que Copilot a proposé :
-- Ce que j'ai accepté, modifié ou refusé, et pourquoi :
-- Comment j'ai vérifié que ça marche :
+- Ce que Copilot a proposé : finScore.textContent += " | CRISTAUX : " + cristaux;
+- Ce que j'ai accepté, modifié ou refusé, et pourquoi : j'ai accepter le code donné car toute les variable etait  définie. 
+- Comment j'ai vérifié que ça marche : le jeux marche bien sur la page de fin le nombre de cristaux attraper est bien afficher 
 
 ## Défi 2 - Ask
 
-- Ma question (prompt exact) :
+- Ma question (prompt exact) : 
 
-```
-(colle-le ici)
+``` 
+je voudrai savoir comment il fle code fait pour que les objet tombe aléatoirment ?
 ```
 
-- Une affirmation de la réponse que j'ai vérifiée :
-- Comment je l'ai vérifiée (un changement dans le code, un test dans le jeu) :
-- Résultat : exacte, fausse ou incomplète :
+- Une affirmation de la réponse que j'ai vérifiée : Les objets tombent de manière aléatoire grâce à Math.random() et à la fonction creerObjet
+- Comment je l'ai vérifiée (un changement dans le code, un test dans le jeu) : j'ai desactiver le random en fixant le X des cristaux a 240
+- Résultat : exacte, fausse ou incomplète : les cristaux tombe tous de la meme zone 
 
 ## Défi 3 - Plan
 
 - Mon prompt en mode Plan :
 
-```
-(colle-le ici)
+``` js 
+/plan Je veux ajouter un cristal de glace, plus rare que le doré. Quand on l'attrape, tous les
+objets ralentissent pendant 4 secondes, puis reprennent leur vitesse. Respecte les règles de
+.github/copilot-instructions.md. Propose un plan sans modifier le code.
 ```
 
 - Le plan est dans le fichier `PLAN.md`.
-- Ce que j'ai changé dans le plan avant de le valider (étape retirée, ajoutée, contrainte) et pourquoi :
+- Ce que j'ai changé dans le plan avant de le valider (étape retirée, ajoutée, contrainte) et pourquoi : les choix confirmés sont : 3 % de rareté, ralentissement à 50 % pendant 4 secondes, score et combo d’un cristal normal, avec une apparence bleu clair. Le plan a été enregistré dans l’état de session ; aucun code du projet n’a été modifié.
 
 ## Défi 4 - Agent
 
 - Mon prompt en mode Agent :
 
-```
+``` js
 (colle-le ici)
 ```
 
