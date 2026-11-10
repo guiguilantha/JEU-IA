@@ -60,6 +60,15 @@ function dessinerPanier(ctx, panier, temps) {
   const pulsation = 0.6 + 0.4 * Math.sin(temps * 6);
   ctx.save();
   ctx.translate(panier.x + panier.largeur / 2, panier.y + panier.hauteur / 2);
+  if (typeof chronoAimant !== "undefined" && chronoAimant > 0) {
+    ctx.strokeStyle = "rgba(159, 202, 88, 0.45)";
+    ctx.lineWidth = 2;
+    ctx.shadowColor = COULEURS.cyan;
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.arc(0, 0, REGLAGES.rayonAimant, 0, Math.PI * 2);
+    ctx.stroke();
+  }
   ctx.rotate(inclinaison);
   ctx.shadowColor = COULEURS.cyan;
   ctx.shadowBlur = 26;
@@ -83,19 +92,31 @@ function dessinerPanier(ctx, panier, temps) {
 function dessinerCristal(ctx, objet, temps) {
   const r = objet.rayon;
   const dore = objet.type === DORE;
-  const couleur = dore ? COULEURS.or : COULEURS.cyan;
+  const glace = objet.type === GLACE;
+  const bouclier = objet.type === BOUCLIER;
+  const couleur = dore ? COULEURS.or : glace ? COULEURS.glace : bouclier ? COULEURS.bouclier : COULEURS.cyan;
   const battement = 1 + 0.06 * Math.sin(temps * 5 + objet.pulsation);
   ctx.rotate(objet.rotation);
   ctx.scale(battement, battement);
   ctx.shadowColor = couleur;
   ctx.shadowBlur = 20;
   ctx.beginPath();
-  ctx.moveTo(0, -r);
-  ctx.lineTo(r * 0.62, 0);
-  ctx.lineTo(0, r);
-  ctx.lineTo(-r * 0.62, 0);
+  if (bouclier) {
+    for (let i = 0; i < 6; i++) {
+      const angle = -Math.PI / 2 + i * Math.PI / 3;
+      const x = Math.cos(angle) * r;
+      const y = Math.sin(angle) * r;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+  } else {
+    ctx.moveTo(0, -r);
+    ctx.lineTo(r * 0.62, 0);
+    ctx.lineTo(0, r);
+    ctx.lineTo(-r * 0.62, 0);
+  }
   ctx.closePath();
-  ctx.fillStyle = dore ? "rgba(255, 209, 102, 0.22)" : "rgba(40, 240, 255, 0.2)";
+  ctx.fillStyle = dore ? "rgba(255, 209, 102, 0.22)" : glace ? "rgba(158, 238, 255, 0.3)" : bouclier ? "rgba(155, 124, 255, 0.3)" : "rgba(40, 240, 255, 0.2)";
   ctx.fill();
   ctx.strokeStyle = couleur;
   ctx.lineWidth = 2;
@@ -135,10 +156,34 @@ function dessinerBombe(ctx, objet, temps) {
   ctx.arc(-r * 0.12, -r * 0.12, r * 0.1, 0, Math.PI * 2);
   ctx.fill();
 }
+function dessinerAimant(ctx, objet, temps) {
+  const r = objet.rayon;
+  const pulsation = 1 + 0.08 * Math.sin(temps * 6 + objet.pulsation);
+  ctx.rotate(objet.rotation);
+  ctx.scale(pulsation, pulsation);
+  ctx.shadowColor = COULEURS.cyan;
+  ctx.shadowBlur = 22;
+  ctx.strokeStyle = COULEURS.cyan;
+  ctx.lineWidth = 6;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.arc(0, 0, r * 0.58, Math.PI * 0.2, Math.PI * 1.8);
+  ctx.stroke();
+  ctx.strokeStyle = COULEURS.magenta;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(-r * 0.55, -r * 0.45);
+  ctx.lineTo(-r * 0.55, -r * 0.05);
+  ctx.moveTo(r * 0.55, -r * 0.45);
+  ctx.lineTo(r * 0.55, -r * 0.05);
+  ctx.stroke();
+  ctx.lineCap = "butt";
+}
 function dessinerObjet(ctx, objet, temps) {
   ctx.save();
   ctx.translate(objet.x, objet.y);
   if (objet.type === BOMBE) dessinerBombe(ctx, objet, temps);
+  else if (objet.type === AIMANT) dessinerAimant(ctx, objet, temps);
   else dessinerCristal(ctx, objet, temps);
   ctx.restore();
 }
