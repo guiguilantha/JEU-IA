@@ -70,6 +70,15 @@ function sonPerte() {
 function sonNiveau() {
   sonSuite([520, 660, 880], 0.11, "square", 0.09);
 }
+function sonVague() {
+  sonSuite([392, 523, 659, 784], 0.13, "triangle", 0.13);
+}
+function sonEvenementVague() {
+  sonSuite([220, 330, 440, 660], 0.1, "sine", 0.12);
+}
+function sonBoss() {
+  sonSuite([180, 240, 180, 320], 0.14, "sawtooth", 0.12);
+}
 function sonClic() {
   note(680, 0.05, "square", 0.07, 120);
 }

@@ -1,4 +1,4 @@
-// Dessin du décor, du panier et des objets. Thème : récif corallien sous-marin.
+// Dessin du décor, de la pieuvre et des objets. Thème : récif corallien sous-marin.
 
 const bulles = [];
 for (let i = 0; i < 46; i++) {
@@ -43,20 +43,24 @@ function dessinerFond(ctx, temps) {
   ctx.fillStyle = halo;
   ctx.fillRect(0, 0, LARGEUR, HAUTEUR);
 
-  // Rayons de lumière qui traversent l'eau.
+  // Ondulations de lumière diffuse qui traversent l'eau.
   ctx.save();
-  ctx.globalAlpha = 0.1;
-  ctx.fillStyle = COULEURS.blanc;
+  ctx.globalAlpha = 0.16;
+  ctx.strokeStyle = "rgba(151, 231, 245, 0.45)";
+  ctx.lineWidth = 3;
+  ctx.shadowColor = "rgba(77, 216, 255, 0.35)";
+  ctx.shadowBlur = 18;
   for (let i = 0; i < 4; i++) {
-    const baseX = (i / 4) * LARGEUR + Math.sin(temps * 0.25 + i) * 30;
-    const largeurRayon = 40 + i * 6;
+    const baseX = 56 + i * 130;
+    const ondulation = Math.sin(temps * 0.55 + i * 1.7) * 20;
     ctx.beginPath();
-    ctx.moveTo(baseX - largeurRayon / 2, 0);
-    ctx.lineTo(baseX + largeurRayon / 2, 0);
-    ctx.lineTo(baseX + largeurRayon * 1.6, HAUTEUR * 0.75);
-    ctx.lineTo(baseX - largeurRayon * 1.6, HAUTEUR * 0.75);
-    ctx.closePath();
-    ctx.fill();
+    ctx.moveTo(baseX - 28, HAUTEUR * 0.08);
+    ctx.bezierCurveTo(
+      baseX + ondulation, HAUTEUR * 0.2,
+      baseX - ondulation, HAUTEUR * 0.38,
+      baseX + ondulation * 0.6, HAUTEUR * 0.58
+    );
+    ctx.stroke();
   }
   ctx.restore();
 
@@ -92,20 +96,36 @@ function dessinerFond(ctx, temps) {
   for (const poisson of poissonsFond) {
     const avance = (temps * poisson.vitesse + poisson.decalage) % (LARGEUR + 60);
     const x = poisson.sens > 0 ? avance - 30 : LARGEUR - avance + 30;
-    const y = poisson.y + Math.sin(temps * 2 + poisson.phase) * 8;
+    const nage = Math.sin(temps * 2.4 + poisson.phase);
+    const y = poisson.y + nage * 8;
+    const battementQueue = 0.5 + nage * 0.16;
+    const inclinaison = nage * 0.08;
     ctx.save();
     ctx.translate(x, y);
     ctx.scale(poisson.sens, 1);
+    ctx.rotate(inclinaison);
     ctx.fillStyle = poisson.teinte;
     ctx.beginPath();
     ctx.ellipse(0, 0, poisson.taille, poisson.taille * 0.52, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
     ctx.moveTo(-poisson.taille * 0.9, 0);
-    ctx.lineTo(-poisson.taille * 1.5, -poisson.taille * 0.5);
-    ctx.lineTo(-poisson.taille * 1.5, poisson.taille * 0.5);
+    ctx.lineTo(-poisson.taille * 1.5, -poisson.taille * battementQueue);
+    ctx.lineTo(-poisson.taille * 1.5, poisson.taille * battementQueue);
     ctx.closePath();
     ctx.fill();
+    ctx.fillStyle = "rgba(234, 249, 255, 0.7)";
+    ctx.beginPath();
+    ctx.arc(poisson.taille * 0.58, -poisson.taille * 0.12, poisson.taille * 0.1, 0, Math.PI * 2);
+    ctx.fill();
+    if (Math.sin(temps * 3 + poisson.phase) > 0.92) {
+      ctx.globalAlpha = 0.45;
+      ctx.strokeStyle = poisson.teinte;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(-poisson.taille * 1.7, -poisson.taille * 0.55, poisson.taille * 0.12, 0, Math.PI * 2);
+      ctx.stroke();
+    }
     ctx.restore();
   }
   ctx.restore();
@@ -129,8 +149,9 @@ function dessinerFond(ctx, temps) {
 function dessinerPanier(ctx, panier, temps) {
   const inclinaison = Math.max(-0.2, Math.min(0.2, panier.vitesse * 0.00025));
   const pulsation = 0.6 + 0.4 * Math.sin(temps * 6);
+  const respiration = 1 + 0.04 * Math.sin(temps * 3.2);
   ctx.save();
-  ctx.translate(panier.x + panier.largeur / 2, panier.y + panier.hauteur / 2);
+  ctx.translate(panier.x + panier.largeur / 2, panier.y + panier.hauteur * 0.35);
   if (typeof chronoAimant !== "undefined" && chronoAimant > 0) {
     ctx.strokeStyle = "rgba(77, 216, 255, 0.45)";
     ctx.lineWidth = 2;
@@ -141,23 +162,46 @@ function dessinerPanier(ctx, panier, temps) {
     ctx.stroke();
   }
   ctx.rotate(inclinaison);
+  ctx.scale(respiration, respiration);
+  ctx.shadowColor = COULEURS.magenta;
+  ctx.shadowBlur = 24;
+  ctx.strokeStyle = COULEURS.magenta;
+  ctx.lineWidth = 4;
+  ctx.lineCap = "round";
+  for (let i = -3; i <= 3; i++) {
+    const departX = i * panier.largeur * 0.12;
+    const balancement = Math.sin(temps * 4.5 + i * 0.8) * (4 + Math.sin(temps * 2 + i) * 2);
+    ctx.beginPath();
+    ctx.moveTo(departX, panier.hauteur * 0.15);
+    ctx.quadraticCurveTo(departX + balancement, panier.hauteur * 1.15, departX + balancement * 0.7, panier.hauteur * 1.65);
+    ctx.stroke();
+  }
+
   ctx.shadowColor = COULEURS.cyan;
   ctx.shadowBlur = 26;
-  ctx.fillStyle = "rgba(40, 240, 255, 0.16)";
+  ctx.fillStyle = "rgba(40, 240, 255, 0.22)";
   ctx.beginPath();
-  ctx.roundRect(-panier.largeur / 2, -panier.hauteur / 2, panier.largeur, panier.hauteur, 8);
+  ctx.ellipse(0, -panier.hauteur * 0.38, panier.largeur * 0.38, panier.hauteur * 1.2, 0, Math.PI, 0);
+  ctx.lineTo(panier.largeur * 0.38, panier.hauteur * 0.25);
+  ctx.quadraticCurveTo(0, panier.hauteur * 0.58, -panier.largeur * 0.38, panier.hauteur * 0.25);
+  ctx.closePath();
   ctx.fill();
-  ctx.shadowBlur = 10;
   ctx.strokeStyle = COULEURS.cyan;
   ctx.lineWidth = 2;
   ctx.stroke();
-  ctx.shadowColor = COULEURS.magenta;
-  ctx.shadowBlur = 16 * pulsation;
-  ctx.fillStyle = COULEURS.magenta;
-  ctx.fillRect(-panier.largeur * 0.17, -2, panier.largeur * 0.34, 4);
-  ctx.fillStyle = "rgba(40, 240, 255, 0.6)";
-  ctx.fillRect(-panier.largeur * 0.32, panier.hauteur / 2, 10, 3);
-  ctx.fillRect(panier.largeur * 0.32 - 10, panier.hauteur / 2, 10, 3);
+
+  ctx.shadowColor = COULEURS.blanc;
+  ctx.shadowBlur = 8 * pulsation;
+  ctx.fillStyle = COULEURS.blanc;
+  ctx.beginPath();
+  ctx.arc(-panier.largeur * 0.14, -panier.hauteur * 0.35, 4.5, 0, Math.PI * 2);
+  ctx.arc(panier.largeur * 0.14, -panier.hauteur * 0.35, 4.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = COULEURS.fond;
+  ctx.beginPath();
+  ctx.arc(-panier.largeur * 0.14, -panier.hauteur * 0.35, 1.5, 0, Math.PI * 2);
+  ctx.arc(panier.largeur * 0.14, -panier.hauteur * 0.35, 1.5, 0, Math.PI * 2);
+  ctx.fill();
   ctx.restore();
 }
 function dessinerCristal(ctx, objet, temps) {
@@ -168,6 +212,7 @@ function dessinerCristal(ctx, objet, temps) {
   const couleur = dore ? COULEURS.or : glace ? COULEURS.glace : bouclier ? COULEURS.bouclier : COULEURS.cyan;
   const nage = 1 + 0.08 * Math.sin(temps * 6 + objet.pulsation);
   const balancement = Math.sin(temps * 5 + objet.pulsation) * 0.22;
+  const battement = 0.5 + Math.sin(temps * 7 + objet.pulsation) * 0.12;
   ctx.rotate(balancement);
   ctx.scale(nage, 1);
   ctx.shadowColor = couleur;
@@ -209,8 +254,8 @@ function dessinerCristal(ctx, objet, temps) {
 
   ctx.beginPath();
   ctx.moveTo(-r * 0.85, 0);
-  ctx.lineTo(-r * 1.5, -r * 0.5);
-  ctx.lineTo(-r * 1.5, r * 0.5);
+  ctx.lineTo(-r * 1.5, -r * battement);
+  ctx.lineTo(-r * 1.5, r * battement);
   ctx.closePath();
   ctx.fillStyle = couleur;
   ctx.fill();
@@ -257,6 +302,46 @@ function dessinerBombe(ctx, objet, temps) {
   ctx.beginPath();
   ctx.arc(-r * 0.12, -r * 0.12, r * 0.1, 0, Math.PI * 2);
   ctx.fill();
+}
+function dessinerBoss(ctx, boss, temps) {
+  ctx.save();
+  ctx.translate(boss.x, boss.y + Math.sin(temps * 4) * 4);
+  ctx.scale(boss.direction, 1);
+  ctx.shadowColor = COULEURS.magenta;
+  ctx.shadowBlur = 28;
+  ctx.fillStyle = "rgba(255, 111, 145, 0.22)";
+  ctx.strokeStyle = COULEURS.magenta;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-58, 0);
+  ctx.quadraticCurveTo(-38, -28, 0, -30);
+  ctx.quadraticCurveTo(38, -28, 58, 0);
+  ctx.lineTo(42, 22);
+  ctx.quadraticCurveTo(0, 34, -42, 22);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+  ctx.strokeStyle = COULEURS.cyan;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(-36, 20);
+  ctx.quadraticCurveTo(-24, 45, -12, 21);
+  ctx.moveTo(-8, 24);
+  ctx.quadraticCurveTo(0, 50, 10, 24);
+  ctx.moveTo(20, 21);
+  ctx.quadraticCurveTo(34, 44, 42, 18);
+  ctx.stroke();
+  ctx.fillStyle = COULEURS.blanc;
+  ctx.beginPath();
+  ctx.arc(-20, -8, 5, 0, Math.PI * 2);
+  ctx.arc(20, -8, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = COULEURS.rouge;
+  ctx.beginPath();
+  ctx.arc(-20, -8, 2, 0, Math.PI * 2);
+  ctx.arc(20, -8, 2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }
 function dessinerAimant(ctx, objet, temps) {
   const r = objet.rayon;

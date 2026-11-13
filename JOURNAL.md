@@ -54,7 +54,7 @@ Modifie les textures et le décor du jeu pour créer une ambiance d’apocalypse
 
 ## Contexte
 
-Le jeu « Pluie de Néon » est réalisé en HTML, CSS et JavaScript simples.
+Le jeu « Récif de Néon » est réalisé en HTML, CSS et JavaScript simples.
 Le décor est dessiné directement dans le canvas, principalement dans `dessin.js`.
 Le jeu doit continuer à fonctionner en ouvrant directement `index.html`.
 

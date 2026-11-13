@@ -6,11 +6,11 @@ Règle commune : un seul défi à la fois, tu testes dans le navigateur, tu gard
 
 ## 1. Aimant à cristaux
 
-**But** : un bonus ramasse les cristaux proches du rail pendant 6 secondes.
+**But** : un bonus ramasse les cristaux proches de la pieuvre pendant 6 secondes.
 
-**À toucher** : `jeu.js` pour l'état et la durée, `dessin.js` pour l'aura autour du rail, `config.js` pour la durée et la fréquence.
+**À toucher** : `jeu.js` pour l'état et la durée, `dessin.js` pour l'aura autour de la pieuvre, `config.js` pour la durée et la fréquence.
 
-**Prompt Copilot** : "Ajoute un power-up aimant dans mon jeu canvas. Pendant 6 secondes après la prise, les cristaux situés à moins de 120 pixels du rail sont attirés vers lui. Affiche une aura cyan autour du rail et un compte à rebours dans le HUD. Ne change pas les autres règles."
+**Prompt Copilot** : "Ajoute un power-up aimant dans mon jeu canvas. Pendant 6 secondes après la prise, les cristaux situés à moins de 120 pixels de la pieuvre sont attirés vers elle. Affiche une aura cyan autour de la pieuvre et un compte à rebours dans le HUD. Ne change pas les autres règles."
 
 **Réussi si** : le bonus apparaît rarement, l'aura et le compteur sont visibles, les cristaux reviennent à la normale après 6 secondes.
 
@@ -60,7 +60,7 @@ Règle commune : un seul défi à la fois, tu testes dans le navigateur, tu gard
 
 **À toucher** : `style.css` avec des variables de couleurs, `config.js` ou `jeu.js` pour le choix, `dessin.js` pour les couleurs du canvas.
 
-**Prompt Copilot** : "Ajoute un sélecteur de thème sur l'écran titre avec trois boutons : Néon, Sunset et Forêt. Chaque thème change les couleurs du fond, du rail, des cristaux et des accents du HUD. Garde le thème choisi dans localStorage et applique-le aussi au canvas."
+**Prompt Copilot** : "Ajoute un sélecteur de thème sur l'écran titre avec trois boutons : Néon, Sunset et Forêt. Chaque thème change les couleurs du fond, de la pieuvre, des cristaux et des accents du HUD. Garde le thème choisi dans localStorage et applique-le aussi au canvas."
 
 **Réussi si** : les trois thèmes sont vraiment différents, le choix survit au rechargement, et les bombes restent reconnaissables.
 

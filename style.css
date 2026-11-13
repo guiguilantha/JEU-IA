@@ -1,4 +1,4 @@
-/* Pluie de Néon : interface dans un récif corallien aquatique. */
+/* Récif de Néon : interface dans un récif corallien aquatique. */
 
 :root {
   --fond: #04141f;
@@ -175,6 +175,60 @@ canvas {
   color: var(--cyan);
 }
 
+.vague-progression {
+  width: 72px;
+  height: 3px;
+  margin-top: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.vague-progression i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(90deg, var(--cyan), var(--magenta));
+  box-shadow: 0 0 8px var(--cyan);
+  transition: transform 0.15s linear;
+}
+
+.chrono-frenesie {
+  display: block;
+  min-height: 12px;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--magenta);
+  opacity: 0;
+}
+
+.chrono-frenesie.actif {
+  opacity: 1;
+  text-shadow: 0 0 12px rgba(255, 111, 145, 0.8);
+  animation: indicateurActif 0.8s ease-in-out infinite;
+}
+
+.evenement-vague {
+  display: block;
+  min-height: 12px;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--magenta);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.evenement-vague.actif {
+  opacity: 1;
+  text-shadow: 0 0 12px rgba(255, 111, 145, 0.8);
+}
+
 .hud-droite {
   text-align: right;
 }
@@ -184,6 +238,10 @@ canvas {
   justify-content: flex-end;
   gap: 5px;
   margin-top: 7px;
+}
+
+.scene[data-mode="frenesie"] .vies {
+  display: none;
 }
 
 .vies i {
@@ -229,6 +287,12 @@ canvas {
   text-shadow: 0 0 10px var(--cyan);
 }
 
+.bouclier.actif,
+.aimant.actif,
+.evenement-vague.actif {
+  animation: indicateurActif 1.5s ease-in-out infinite;
+}
+
 .combo {
   position: absolute;
   top: calc(var(--taille-scene) * 0.037);
@@ -268,6 +332,46 @@ canvas {
   transform: scaleX(0);
   transform-origin: left center;
   background: var(--or);
+}
+
+.alerte-boss {
+  position: absolute;
+  top: calc(var(--taille-scene) * 0.13);
+  left: 50%;
+  width: 52%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: var(--magenta);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.alerte-boss.actif {
+  opacity: 1;
+  text-shadow: 0 0 14px rgba(255, 111, 145, 0.75);
+}
+
+.alerte-boss strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
+
+.alerte-boss i {
+  display: block;
+  height: 3px;
+  margin-top: 5px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.alerte-boss b {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: var(--magenta);
 }
 
 .ecran {
@@ -380,9 +484,21 @@ canvas {
   border-color: rgba(40, 240, 255, 0.5);
 }
 
+#bouton-frenesie {
+  margin-top: 10px;
+  border-color: rgba(255, 111, 145, 0.5);
+  color: var(--magenta);
+}
+
+#bouton-frenesie:hover {
+  border-color: var(--magenta);
+  box-shadow: 0 0 18px rgba(255, 111, 145, 0.3);
+}
+
 .bouton-principal:focus-visible,
 .bouton-secondaire:focus-visible,
-.bouton-son:focus-visible {
+.bouton-son:focus-visible,
+.bouton-theme:focus-visible {
   outline: 2px solid var(--or);
   outline-offset: 3px;
 }
@@ -394,6 +510,43 @@ canvas {
   line-height: 1.7;
   letter-spacing: 0.12em;
   color: #6f6a8a;
+}
+
+.choix-theme {
+  margin-top: 20px;
+  font-family: var(--mono);
+  color: var(--gris);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+}
+
+.choix-theme > span {
+  display: block;
+  margin-bottom: 7px;
+}
+
+.choix-theme > div {
+  display: flex;
+  gap: 5px;
+}
+
+.bouton-theme {
+  padding: 6px 8px;
+  border: 1px solid rgba(139, 135, 168, 0.35);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--gris);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.bouton-theme.actif,
+.bouton-theme:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 12px rgba(40, 240, 255, 0.2);
 }
 
 .badge {
@@ -473,6 +626,11 @@ canvas {
 @keyframes battement {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
+}
+
+@keyframes indicateurActif {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
 }
 
 @media (max-height: 700px) {
