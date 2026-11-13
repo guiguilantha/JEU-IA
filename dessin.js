@@ -1,87 +1,130 @@
-// Dessin du décor, du panier et des objets. Tout est tracé au canvas.
+// Dessin du décor, du panier et des objets. Thème : récif corallien sous-marin.
 
-const etoiles = [];
-for (let i = 0; i < 64; i++) {
-  etoiles.push({ x: Math.random() * LARGEUR, y: Math.random() * HAUTEUR * 0.6, taille: Math.random() + 0.5, phase: Math.random() * 6.28 });
+const bulles = [];
+for (let i = 0; i < 46; i++) {
+  bulles.push({
+    x: Math.random() * LARGEUR,
+    decalage: Math.random() * (HAUTEUR + 40),
+    rayon: 1.5 + Math.random() * 3.5,
+    vitesse: 14 + Math.random() * 30,
+    derive: Math.random() * 6.28,
+    phase: Math.random() * 6.28
+  });
 }
+
+const poissonsFond = [];
+for (let i = 0; i < 7; i++) {
+  poissonsFond.push({
+    y: 40 + Math.random() * (HAUTEUR * 0.5),
+    taille: 10 + Math.random() * 14,
+    vitesse: 18 + Math.random() * 26,
+    sens: Math.random() < 0.5 ? 1 : -1,
+    decalage: Math.random() * LARGEUR,
+    phase: Math.random() * 6.28,
+    teinte: Math.random() < 0.5 ? "rgba(77, 216, 255, 0.4)" : "rgba(255, 209, 102, 0.32)"
+  });
+}
+
 function dessinerFond(ctx, temps) {
+  // Dégradé de la surface éclairée vers les profondeurs sombres.
   const degrade = ctx.createLinearGradient(0, 0, 0, HAUTEUR);
-  degrade.addColorStop(0, "#111b12");
-  degrade.addColorStop(0.52, COULEURS.fond);
-  degrade.addColorStop(1, "#050805");
+  degrade.addColorStop(0, "#0b3c57");
+  degrade.addColorStop(0.45, COULEURS.fond);
+  degrade.addColorStop(1, "#010a14");
   ctx.fillStyle = degrade;
   ctx.fillRect(0, 0, LARGEUR, HAUTEUR);
 
-  const horizon = HAUTEUR * 0.58;
-  const halo = ctx.createRadialGradient(LARGEUR / 2, horizon, 4, LARGEUR / 2, horizon, LARGEUR * 0.8);
-  halo.addColorStop(0, "rgba(143, 36, 36, 0.22)");
-  halo.addColorStop(0.5, "rgba(110, 150, 55, 0.08)");
+  // Lueur de surface, près du haut de l'écran.
+  const surface = HAUTEUR * 0.12;
+  const halo = ctx.createRadialGradient(LARGEUR / 2, 0, 4, LARGEUR / 2, surface, LARGEUR * 0.9);
+  halo.addColorStop(0, "rgba(180, 240, 255, 0.28)");
+  halo.addColorStop(0.5, "rgba(77, 216, 255, 0.08)");
   halo.addColorStop(1, "rgba(0, 0, 0, 0)");
   ctx.fillStyle = halo;
   ctx.fillRect(0, 0, LARGEUR, HAUTEUR);
 
+  // Rayons de lumière qui traversent l'eau.
   ctx.save();
-  ctx.globalAlpha = 0.9;
-  for (let i = 0; i < 10; i++) {
-    const largeur = 28 + (i % 3) * 13;
-    const hauteur = 72 + (i * 31) % 120;
-    const x = i * 54 - 12;
-    const y = horizon - hauteur;
-    ctx.fillStyle = i % 2 ? "#111811" : "#182016";
-    ctx.fillRect(x, y, largeur, hauteur);
-    ctx.fillStyle = "rgba(5, 8, 5, 0.9)";
-    ctx.fillRect(x + largeur * 0.55, y - 10, largeur * 0.5, 12);
-    ctx.strokeStyle = "rgba(78, 91, 61, 0.35)";
-    ctx.lineWidth = 2;
+  ctx.globalAlpha = 0.1;
+  ctx.fillStyle = COULEURS.blanc;
+  for (let i = 0; i < 4; i++) {
+    const baseX = (i / 4) * LARGEUR + Math.sin(temps * 0.25 + i) * 30;
+    const largeurRayon = 40 + i * 6;
     ctx.beginPath();
-    ctx.moveTo(x + largeur * 0.18, y + hauteur * 0.2);
-    ctx.lineTo(x + largeur * 0.42, y + hauteur * 0.34);
-    ctx.lineTo(x + largeur * 0.27, y + hauteur * 0.58);
-    ctx.stroke();
-    for (let ligne = 0; ligne < 3; ligne++) {
-      for (let colonne = 0; colonne < 2; colonne++) {
-        if ((i + ligne + colonne) % 3 !== 0) {
-          ctx.fillStyle = ligne === 1 && colonne === 0 ? "rgba(210, 190, 75, 0.5)" : "rgba(76, 96, 63, 0.45)";
-          ctx.fillRect(x + 7 + colonne * 15, y + 16 + ligne * 24, 6, 9);
-        }
-      }
-    }
+    ctx.moveTo(baseX - largeurRayon / 2, 0);
+    ctx.lineTo(baseX + largeurRayon / 2, 0);
+    ctx.lineTo(baseX + largeurRayon * 1.6, HAUTEUR * 0.75);
+    ctx.lineTo(baseX - largeurRayon * 1.6, HAUTEUR * 0.75);
+    ctx.closePath();
+    ctx.fill();
   }
-  ctx.fillStyle = "rgba(2, 5, 2, 0.82)";
-  ctx.fillRect(0, horizon - 3, LARGEUR, 8);
   ctx.restore();
 
-  ctx.strokeStyle = COULEURS.grille;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  for (let i = -9; i <= 9; i++) {
-    ctx.moveTo(LARGEUR / 2, horizon);
-    ctx.lineTo(LARGEUR / 2 + i * 78, HAUTEUR);
-  }
-  ctx.stroke();
-  for (let i = 0; i < 14; i++) {
-    const avancee = (i + (temps * 0.3) % 1) / 14;
-    const y = horizon + Math.pow(avancee, 2.3) * (HAUTEUR - horizon);
-    ctx.globalAlpha = 0.12 + avancee * 0.5;
+  // Récif corallien et algues au fond de l'écran.
+  const solY = HAUTEUR - 46;
+  ctx.save();
+  for (let i = 0; i < 9; i++) {
+    const x = i * 58 - 10;
+    const hauteurAlgue = 60 + (i * 37) % 90;
+    const balancement = Math.sin(temps * 1.4 + i) * 10;
+    ctx.strokeStyle = i % 2 ? "rgba(46, 196, 143, 0.55)" : "rgba(33, 150, 115, 0.5)";
+    ctx.lineWidth = 5;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(LARGEUR, y);
+    ctx.moveTo(x, solY + 10);
+    ctx.quadraticCurveTo(x + balancement, solY - hauteurAlgue * 0.5, x + balancement * 1.6, solY - hauteurAlgue);
     ctx.stroke();
   }
+  for (let i = 0; i < 6; i++) {
+    const x = i * 86 + 24;
+    const rayon = 20 + (i % 3) * 8;
+    ctx.fillStyle = i % 2 ? "rgba(255, 111, 145, 0.5)" : "rgba(255, 209, 102, 0.4)";
+    ctx.beginPath();
+    ctx.arc(x, solY + 14, rayon, Math.PI, 0);
+    ctx.fill();
+  }
+  ctx.fillStyle = "rgba(3, 20, 32, 0.85)";
+  ctx.fillRect(0, solY + 6, LARGEUR, HAUTEUR - solY);
+  ctx.restore();
+
+  // Poissons qui nagent en arrière-plan, pour le décor.
+  ctx.save();
+  for (const poisson of poissonsFond) {
+    const avance = (temps * poisson.vitesse + poisson.decalage) % (LARGEUR + 60);
+    const x = poisson.sens > 0 ? avance - 30 : LARGEUR - avance + 30;
+    const y = poisson.y + Math.sin(temps * 2 + poisson.phase) * 8;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(poisson.sens, 1);
+    ctx.fillStyle = poisson.teinte;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, poisson.taille, poisson.taille * 0.52, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-poisson.taille * 0.9, 0);
+    ctx.lineTo(-poisson.taille * 1.5, -poisson.taille * 0.5);
+    ctx.lineTo(-poisson.taille * 1.5, poisson.taille * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // Bulles qui remontent vers la surface.
+  ctx.save();
+  for (const bulle of bulles) {
+    const progression = (temps * bulle.vitesse + bulle.decalage) % (HAUTEUR + 40);
+    const y = HAUTEUR + 20 - progression;
+    const x = bulle.x + Math.sin(temps * 1.2 + bulle.derive) * 10;
+    ctx.globalAlpha = 0.3 + 0.25 * Math.sin(temps * 3 + bulle.phase);
+    ctx.strokeStyle = "rgba(180, 240, 255, 0.6)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y, bulle.rayon, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.restore();
   ctx.globalAlpha = 1;
-
-  ctx.save();
-  ctx.shadowColor = COULEURS.magenta;
-  ctx.shadowBlur = 16;
-  ctx.strokeStyle = "rgba(143, 36, 36, 0.5)";
-  ctx.beginPath();
-  ctx.moveTo(0, horizon);
-  ctx.lineTo(LARGEUR, horizon);
-  ctx.stroke();
-  ctx.restore();
-
-  ctx.fillStyle = "rgba(110, 150, 55, 0.06)";
-  ctx.fillRect(0, horizon - 34 + Math.sin(temps * 0.4) * 4, LARGEUR, 34);
 }
 function dessinerPanier(ctx, panier, temps) {
   const inclinaison = Math.max(-0.2, Math.min(0.2, panier.vitesse * 0.00025));
@@ -89,7 +132,7 @@ function dessinerPanier(ctx, panier, temps) {
   ctx.save();
   ctx.translate(panier.x + panier.largeur / 2, panier.y + panier.hauteur / 2);
   if (typeof chronoAimant !== "undefined" && chronoAimant > 0) {
-    ctx.strokeStyle = "rgba(159, 202, 88, 0.45)";
+    ctx.strokeStyle = "rgba(77, 216, 255, 0.45)";
     ctx.lineWidth = 2;
     ctx.shadowColor = COULEURS.cyan;
     ctx.shadowBlur = 18;
@@ -123,35 +166,66 @@ function dessinerCristal(ctx, objet, temps) {
   const glace = objet.type === GLACE;
   const bouclier = objet.type === BOUCLIER;
   const couleur = dore ? COULEURS.or : glace ? COULEURS.glace : bouclier ? COULEURS.bouclier : COULEURS.cyan;
-  const battement = 1 + 0.06 * Math.sin(temps * 5 + objet.pulsation);
-  ctx.rotate(objet.rotation);
-  ctx.scale(battement, battement);
+  const nage = 1 + 0.08 * Math.sin(temps * 6 + objet.pulsation);
+  const balancement = Math.sin(temps * 5 + objet.pulsation) * 0.22;
+  ctx.rotate(balancement);
+  ctx.scale(nage, 1);
   ctx.shadowColor = couleur;
-  ctx.shadowBlur = 20;
-  ctx.beginPath();
+  ctx.shadowBlur = 18;
+
   if (bouclier) {
-    for (let i = 0; i < 6; i++) {
-      const angle = -Math.PI / 2 + i * Math.PI / 3;
-      const x = Math.cos(angle) * r;
-      const y = Math.sin(angle) * r;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
+    // Une perle protectrice nacrée.
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.85, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(155, 124, 255, 0.28)";
+    ctx.fill();
+    ctx.strokeStyle = couleur;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const angle = (i / 3) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(angle) * r * 0.6, Math.sin(angle) * r * 0.6);
+      ctx.stroke();
     }
-  } else {
-    ctx.moveTo(0, -r);
-    ctx.lineTo(r * 0.62, 0);
-    ctx.lineTo(0, r);
-    ctx.lineTo(-r * 0.62, 0);
+    ctx.fillStyle = COULEURS.blanc;
+    ctx.beginPath();
+    ctx.arc(-r * 0.2, -r * 0.2, r * 0.22, 0, Math.PI * 2);
+    ctx.fill();
+    return;
   }
-  ctx.closePath();
-  ctx.fillStyle = dore ? "rgba(255, 209, 102, 0.22)" : glace ? "rgba(158, 238, 255, 0.3)" : bouclier ? "rgba(155, 124, 255, 0.3)" : "rgba(40, 240, 255, 0.2)";
+
+  // Un petit poisson : corps ovale, nageoire dorsale et queue.
+  ctx.beginPath();
+  ctx.ellipse(0, 0, r * 0.95, r * 0.6, 0, 0, Math.PI * 2);
+  ctx.fillStyle = dore ? "rgba(255, 209, 102, 0.3)" : glace ? "rgba(158, 238, 255, 0.32)" : "rgba(40, 240, 255, 0.26)";
   ctx.fill();
   ctx.strokeStyle = couleur;
   ctx.lineWidth = 2;
   ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-r * 0.85, 0);
+  ctx.lineTo(-r * 1.5, -r * 0.5);
+  ctx.lineTo(-r * 1.5, r * 0.5);
+  ctx.closePath();
+  ctx.fillStyle = couleur;
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(0, -r * 0.5);
+  ctx.lineTo(r * 0.25, -r * 0.95);
+  ctx.lineTo(r * 0.45, -r * 0.4);
+  ctx.closePath();
+  ctx.fillStyle = couleur;
+  ctx.fill();
+
   ctx.fillStyle = COULEURS.blanc;
   ctx.beginPath();
-  ctx.arc(0, 0, r * 0.28, 0, Math.PI * 2);
+  ctx.arc(r * 0.45, -r * 0.08, r * 0.14, 0, Math.PI * 2);
   ctx.fill();
 }
 function dessinerBombe(ctx, objet, temps) {

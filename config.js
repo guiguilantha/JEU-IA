@@ -1,4 +1,4 @@
-// Réglages de Pluie de Néon.
+// Réglages de Pluie de Néon — thème récif corallien aquatique.
 // Modifie ces valeurs pour équilibrer le jeu sans toucher au reste du code.
 
 const LARGEUR = 480; // largeur logique du canvas
@@ -13,15 +13,15 @@ const BOUCLIER = "bouclier";
 const AIMANT = "aimant";
 
 const COULEURS = {
-  fond: "#05030f",
+  fond: "#04283d",
   cyan: "#28f0ff",
   glace: "#9eeeff",
   bouclier: "#9b7cff",
-  magenta: "#ff3ea5",
+  magenta: "#ff6f91",
   or: "#ffd166",
   rouge: "#ff4d6d",
-  blanc: "#f5f7ff",
-  grille: "rgba(40, 240, 255, 0.16)"
+  blanc: "#eaf9ff",
+  grille: "rgba(77, 216, 255, 0.14)"
 };
 
 const REGLAGES = {
